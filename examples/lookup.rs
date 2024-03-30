@@ -1,15 +1,17 @@
+use std::net::IpAddr;
+
 use ipstruct::client::Client;
 use ipstruct::setting::ClientSetting;
-use ipstruct::ipinfo::{IpInfoSimple, IpInfo, HeaderInfo};
+use ipstruct::ipinfo::{IpInfo, HeaderInfo};
 
 #[tokio::main]
 async fn main() {
     let setting: ClientSetting = ClientSetting::default();
     let client: Client = Client::new(setting).unwrap();
-    let ip_info_simple: IpInfoSimple = client.get_self_ip().await.unwrap();
-    println!("{:?}", ip_info_simple);
-    let ip_info_simple = client.get_self_ipv4().await.unwrap();
-    println!("{:?}", ip_info_simple);
+    let ip_addr: IpAddr = client.get_self_ip().await.unwrap();
+    println!("{}", ip_addr);
+    let ipv4_addr: IpAddr = client.get_self_ipv4().await.unwrap();
+    println!("{:?}", ipv4_addr);
     let ip_info: IpInfo = client.get_self_ip_info().await.unwrap();
     println!("{:?}", ip_info);
     let ip_info: IpInfo = client.get_self_ipv4_info().await.unwrap();
