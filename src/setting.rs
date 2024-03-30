@@ -50,6 +50,11 @@ impl ClientSetting {
         self
     }
     /// Set the proxy scheme for the request
+    /// 
+    /// Proxy scheme examples: 
+    /// - http://proxy.example.com
+    /// - https://proxy.example.com
+    /// - socks5://127.0.0.1:9050
     pub fn proxy_scheme(mut self, proxy_scheme: &str) -> Self {
         self.proxy_scheme = Some(proxy_scheme.to_string());
         self
@@ -79,6 +84,11 @@ impl ClientSetting {
         self.user_agent = Some(user_agent.to_string());
     }
     /// Set the proxy scheme for the request
+    /// 
+    /// Proxy scheme examples: 
+    /// - http://proxy.example.com
+    /// - https://proxy.example.com
+    /// - socks5://127.0.0.1:9050
     pub fn set_proxy_scheme(&mut self, proxy_scheme: &str) {
         self.proxy_scheme = Some(proxy_scheme.to_string());
     }
