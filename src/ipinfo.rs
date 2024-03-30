@@ -1,8 +1,8 @@
 pub const BASE_URL: &str = "https://api.ipstruct.com/";
 pub const BASE_URL_V4: &str = "https://ipv4.ipstruct.com/";
-pub const ROUTE_IP: &str = "ip";
-pub const ROUTE_HEADER: &str = "header";
-pub const ROUTE_IP_REVERSE: &str = "ip/reverse";
+pub(crate) const ROUTE_IP: &str = "ip";
+pub(crate) const ROUTE_HEADER: &str = "header";
+pub(crate) const ROUTE_IP_REVERSE: &str = "ip/reverse";
 
 use serde::{Deserialize, Serialize};
 
