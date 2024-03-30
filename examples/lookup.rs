@@ -1,8 +1,8 @@
 use std::net::IpAddr;
 
 use ipstruct::client::Client;
+use ipstruct::ipinfo::{HeaderInfo, IpInfo};
 use ipstruct::setting::ClientSetting;
-use ipstruct::ipinfo::{IpInfo, HeaderInfo};
 
 #[tokio::main]
 async fn main() {

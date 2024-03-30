@@ -5,7 +5,12 @@ pub(crate) const DEFAULT_USER_AGENT_FIREFOX: &str =
 pub(crate) const DEFAULT_USER_AGENT_CHROME: &str =
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
 /// Default User Agent
-pub static DEFAULT_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"),"-rust-client","/",env!("CARGO_PKG_VERSION"));
+pub static DEFAULT_USER_AGENT: &str = concat!(
+    env!("CARGO_PKG_NAME"),
+    "-rust-client",
+    "/",
+    env!("CARGO_PKG_VERSION")
+);
 
 /// Client Setting
 #[derive(Debug, Clone)]
@@ -50,8 +55,8 @@ impl ClientSetting {
         self
     }
     /// Set the proxy scheme for the request
-    /// 
-    /// Proxy scheme examples: 
+    ///
+    /// Proxy scheme examples:
     /// - http://proxy.example.com
     /// - https://proxy.example.com
     /// - socks5://127.0.0.1:9050
@@ -84,8 +89,8 @@ impl ClientSetting {
         self.user_agent = Some(user_agent.to_string());
     }
     /// Set the proxy scheme for the request
-    /// 
-    /// Proxy scheme examples: 
+    ///
+    /// Proxy scheme examples:
     /// - http://proxy.example.com
     /// - https://proxy.example.com
     /// - socks5://127.0.0.1:9050
