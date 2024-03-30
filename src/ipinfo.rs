@@ -7,18 +7,14 @@ pub const ROUTE_IP_REVERSE: &str = "ip/reverse";
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ErrorResponse {
-    pub status_code: String,
-    pub error_message: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct IpInfoSimple {
+pub(crate) struct IpInfoSimple {
     pub ip_addr: String,
     pub api_version: String,
     pub message: String,
 }
 
+/// IP Address information
+/// This includes IP address, country, ASN, AS Name(ISP), and hostname(optional).
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IpInfo {
     pub ip_version: String,
@@ -37,6 +33,7 @@ pub struct IpInfo {
     pub status: String,
 }
 
+/// Request header information
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct HeaderInfo {
     pub ip_addr: String,

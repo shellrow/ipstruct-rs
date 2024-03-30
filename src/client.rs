@@ -1,7 +1,7 @@
 use std::net::IpAddr;
 
 use crate::setting::ClientSetting;
-use crate::setting::APP_USER_AGENT;
+use crate::setting::DEFAULT_USER_AGENT;
 use crate::ipinfo;
 
 /// API client for ipstruct.com
@@ -38,13 +38,13 @@ impl Client {
                     inner: reqwest::Client::builder()
                         .timeout(setting.timeout)
                         .proxy(reqwest::Proxy::all(proxy_scheme).unwrap())
-                        .user_agent(setting.user_agent.as_deref().unwrap_or(APP_USER_AGENT))
+                        .user_agent(setting.user_agent.as_deref().unwrap_or(DEFAULT_USER_AGENT))
                         .build()?,
                     blocking_inner: if setting.blocking {
                             Some(reqwest::blocking::Client::builder()
                             .timeout(setting.timeout)
                             .proxy(reqwest::Proxy::all(proxy_scheme).unwrap())
-                            .user_agent(setting.user_agent.as_deref().unwrap_or(APP_USER_AGENT))
+                            .user_agent(setting.user_agent.as_deref().unwrap_or(DEFAULT_USER_AGENT))
                             .build()?)
                         } else {
                             None
@@ -56,10 +56,12 @@ impl Client {
                 Ok(Client {
                     inner: reqwest::Client::builder()
                         .timeout(setting.timeout)
+                        .user_agent(setting.user_agent.as_deref().unwrap_or(DEFAULT_USER_AGENT))
                         .build()?,
                     blocking_inner: if setting.blocking {
                             Some(reqwest::blocking::Client::builder()
                             .timeout(setting.timeout)
+                            .user_agent(setting.user_agent.as_deref().unwrap_or(DEFAULT_USER_AGENT))
                             .build()?)
                         } else {
                             None
@@ -70,6 +72,7 @@ impl Client {
         }
     }
     /// Get public IP address without any additional information.
+    /// 
     /// Supports both IPv4 and IPv6.
     pub async fn get_self_ip(&self) -> Result<IpAddr, Box<dyn std::error::Error>> {
         let response = self.inner.get(ipinfo::BASE_URL).send().await?;
@@ -96,6 +99,11 @@ impl Client {
             Err(e) => Err(e.into()),
         }
     }
+    /// Get public IP address with additional information. 
+    /// 
+    /// Supports both IPv4 and IPv6.
+    /// 
+    /// This includes IP address, country, ASN, AS Name(ISP), and hostname(optional).
     pub async fn get_self_ip_info(&self) -> Result<ipinfo::IpInfo, Box<dyn std::error::Error>> {
         let url = if self.setting.reverse_dns {
             format!("{}{}", ipinfo::BASE_URL, ipinfo::ROUTE_IP_REVERSE)
@@ -105,6 +113,9 @@ impl Client {
         let response = self.inner.get(&url).send().await?;
         Ok(response.json::<ipinfo::IpInfo>().await?)
     }
+    /// Get public IPv4 address with additional information.
+    /// 
+    /// This includes IP address, country, ASN, AS Name(ISP), and hostname(optional).
     pub async fn get_self_ipv4_info(&self) -> Result<ipinfo::IpInfo, Box<dyn std::error::Error>> {
         let url = if self.setting.reverse_dns {
             format!("{}{}", ipinfo::BASE_URL_V4, ipinfo::ROUTE_IP_REVERSE)
@@ -114,16 +125,19 @@ impl Client {
         let response = self.inner.get(&url).send().await?;
         Ok(response.json::<ipinfo::IpInfo>().await?)
     }
+    /// Get header information of the request.
     pub async fn get_header_info(&self) -> Result<ipinfo::HeaderInfo, Box<dyn std::error::Error>> {
         let url = format!("{}{}", ipinfo::BASE_URL, ipinfo::ROUTE_HEADER);
         let response = self.inner.get(&url).send().await?;
         Ok(response.json::<ipinfo::HeaderInfo>().await?)
     }
+    /// Get header information of the request for IPv4.
     pub async fn get_header_info_ipv4(&self) -> Result<ipinfo::HeaderInfo, Box<dyn std::error::Error>> {
         let url = format!("{}{}", ipinfo::BASE_URL_V4, ipinfo::ROUTE_HEADER);
         let response = self.inner.get(&url).send().await?;
         Ok(response.json::<ipinfo::HeaderInfo>().await?)
     }
+    /// Get IP information of the given IP address.
     pub async fn get_ip_info(&self, ip: &str) -> Result<ipinfo::IpInfo, Box<dyn std::error::Error>> {
         let url = if self.setting.reverse_dns {
             format!("{}{}/{}", ipinfo::BASE_URL, ipinfo::ROUTE_IP_REVERSE, ip)
@@ -133,6 +147,7 @@ impl Client {
         let response = self.inner.get(&url).send().await?;
         Ok(response.json::<ipinfo::IpInfo>().await?)
     }
+    /// Get public IP address without any additional information.
     pub fn get_self_ip_blocking(&self) -> Result<IpAddr, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
@@ -152,6 +167,7 @@ impl Client {
             }
         }
     }
+    /// Get public IPv4 address without any additional information.
     pub fn get_self_ipv4_blocking(&self) -> Result<IpAddr, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
@@ -171,6 +187,9 @@ impl Client {
             }
         }
     }
+    /// Get public IP address with additional information.
+    /// 
+    /// This includes IP address, country, ASN, AS Name(ISP), and hostname(optional).
     pub fn get_self_ip_info_blocking(&self) -> Result<ipinfo::IpInfo, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
@@ -187,6 +206,9 @@ impl Client {
             }
         }
     }
+    /// Get public IPv4 address with additional information.
+    /// 
+    /// This includes IP address, country, ASN, AS Name(ISP), and hostname(optional).
     pub fn get_self_ipv4_info_blocking(&self) -> Result<ipinfo::IpInfo, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
@@ -203,6 +225,7 @@ impl Client {
             }
         }
     }
+    /// Get header information of the request.
     pub fn get_header_info_blocking(&self) -> Result<ipinfo::HeaderInfo, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
@@ -215,6 +238,7 @@ impl Client {
             }
         }
     }
+    /// Get header information of the request for IPv4.
     pub fn get_header_info_ipv4_blocking(&self) -> Result<ipinfo::HeaderInfo, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
@@ -227,6 +251,7 @@ impl Client {
             }
         }
     }
+    /// Get IP information of the given IP address.
     pub fn get_ip_info_blocking(&self, ip: &str) -> Result<ipinfo::IpInfo, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
