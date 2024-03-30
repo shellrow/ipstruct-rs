@@ -1,7 +1,10 @@
+use std::net::IpAddr;
+
 use crate::setting::ClientSetting;
 use crate::setting::APP_USER_AGENT;
 use crate::ipinfo;
 
+/// API client for ipstruct.com
 #[derive(Debug, Clone)]
 pub struct Client {
     inner: reqwest::Client,
@@ -27,6 +30,7 @@ impl Default for Client {
 }
 
 impl Client {
+    /// Create a new client with the given setting
     pub fn new(setting: ClientSetting) -> Result<Self, Box<dyn std::error::Error>> {
         match &setting.proxy_scheme {
             Some(proxy_scheme) => {
@@ -65,13 +69,32 @@ impl Client {
             }
         }
     }
-    pub async fn get_self_ip(&self) -> Result<ipinfo::IpInfoSimple, Box<dyn std::error::Error>> {
+    /// Get public IP address without any additional information.
+    /// Supports both IPv4 and IPv6.
+    pub async fn get_self_ip(&self) -> Result<IpAddr, Box<dyn std::error::Error>> {
         let response = self.inner.get(ipinfo::BASE_URL).send().await?;
-        Ok(response.json::<ipinfo::IpInfoSimple>().await?)
+        match response.json::<ipinfo::IpInfoSimple>().await {
+            Ok(ip_info) => {
+                match ip_info.ip_addr.parse::<IpAddr>() {
+                    Ok(ip_addr) => Ok(ip_addr),
+                    Err(_) => Err("Failed to parse IP address".into()),
+                }
+            }
+            Err(e) => Err(e.into()),
+        }
     }
-    pub async fn get_self_ipv4(&self) -> Result<ipinfo::IpInfoSimple, Box<dyn std::error::Error>> {
+    /// Get public IPv4 address without any additional information.
+    pub async fn get_self_ipv4(&self) -> Result<IpAddr, Box<dyn std::error::Error>> {
         let response = self.inner.get(ipinfo::BASE_URL_V4).send().await?;
-        Ok(response.json::<ipinfo::IpInfoSimple>().await?)
+        match response.json::<ipinfo::IpInfoSimple>().await {
+            Ok(ip_info) => {
+                match ip_info.ip_addr.parse::<IpAddr>() {
+                    Ok(ip_addr) => Ok(ip_addr),
+                    Err(_) => Err("Failed to parse IP address".into()),
+                }
+            }
+            Err(e) => Err(e.into()),
+        }
     }
     pub async fn get_self_ip_info(&self) -> Result<ipinfo::IpInfo, Box<dyn std::error::Error>> {
         let url = if self.setting.reverse_dns {
@@ -110,22 +133,38 @@ impl Client {
         let response = self.inner.get(&url).send().await?;
         Ok(response.json::<ipinfo::IpInfo>().await?)
     }
-    pub fn get_self_ip_blocking(&self) -> Result<ipinfo::IpInfoSimple, Box<dyn std::error::Error>> {
+    pub fn get_self_ip_blocking(&self) -> Result<IpAddr, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
                 let response = blocking_inner.get(ipinfo::BASE_URL).send()?;
-                Ok(response.json::<ipinfo::IpInfoSimple>()?)
+                match response.json::<ipinfo::IpInfoSimple>() {
+                    Ok(ip_info) => {
+                        match ip_info.ip_addr.parse::<IpAddr>() {
+                            Ok(ip_addr) => Ok(ip_addr),
+                            Err(_) => Err("Failed to parse IP address".into()),
+                        }
+                    }
+                    Err(e) => Err(e.into()),
+                }
             }
             None => {
                 Err("Blocking is not enabled".into())
             }
         }
     }
-    pub fn get_self_ipv4_blocking(&self) -> Result<ipinfo::IpInfoSimple, Box<dyn std::error::Error>> {
+    pub fn get_self_ipv4_blocking(&self) -> Result<IpAddr, Box<dyn std::error::Error>> {
         match &self.blocking_inner {
             Some(blocking_inner) => {
                 let response = blocking_inner.get(ipinfo::BASE_URL_V4).send()?;
-                Ok(response.json::<ipinfo::IpInfoSimple>()?)
+                match response.json::<ipinfo::IpInfoSimple>() {
+                    Ok(ip_info) => {
+                        match ip_info.ip_addr.parse::<IpAddr>() {
+                            Ok(ip_addr) => Ok(ip_addr),
+                            Err(_) => Err("Failed to parse IP address".into()),
+                        }
+                    }
+                    Err(e) => Err(e.into()),
+                }
             }
             None => {
                 Err("Blocking is not enabled".into())
