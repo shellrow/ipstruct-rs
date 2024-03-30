@@ -6,6 +6,7 @@ use ipstruct::ipinfo::{IpInfo, HeaderInfo};
 
 #[tokio::main]
 async fn main() {
+    println!("IP info lookup {}", ipstruct::setting::DEFAULT_USER_AGENT);
     let setting: ClientSetting = ClientSetting::default();
     let client: Client = Client::new(setting).unwrap();
     let ip_addr: IpAddr = client.get_self_ip().await.unwrap();

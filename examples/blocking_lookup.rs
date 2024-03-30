@@ -5,6 +5,7 @@ use ipstruct::setting::ClientSetting;
 use ipstruct::ipinfo::{IpInfo, HeaderInfo};
 
 fn main() {
+    println!("Blocking IP info lookup {}", ipstruct::setting::DEFAULT_USER_AGENT);
     let setting: ClientSetting = ClientSetting::default().blocking(true);
     let client: Client = Client::new(setting).unwrap();
     let ip_addr: IpAddr = client.get_self_ip_blocking().unwrap();
