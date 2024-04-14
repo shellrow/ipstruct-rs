@@ -1,6 +1,6 @@
 [package]
 name = "ipstruct"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Rust client library for the IPStruct"
 authors = ["shellrow <shellrow@foctet.com>"]

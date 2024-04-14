@@ -22,7 +22,7 @@ Rust client library for accessing the ipstruct.com Web API. With this library, y
 Add `ipstruct` to your dependencies  
 ```toml:Cargo.toml
 [dependencies]
-ipstruct = "0.1.0"
+ipstruct = "0.2.0"
 ```
 
 For more details, see [examples][examples-url] or [doc][doc-url].
