@@ -18,19 +18,14 @@ pub(crate) struct IpInfoSimple {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct IpInfo {
     pub ip_version: String,
+    pub ip_addr_dec: String,
     pub ip_addr: String,
     pub host_name: String,
-    pub ip_from_dec: String,
-    pub ip_to_dec: String,
-    pub ip_from: String,
-    pub ip_to: String,
-    pub cidr: String,
+    pub network: String,
     pub asn: String,
     pub as_name: String,
     pub country_code: String,
     pub country_name: String,
-    pub registry: String,
-    pub status: String,
 }
 
 /// Request header information
